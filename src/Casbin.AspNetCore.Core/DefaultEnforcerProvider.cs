@@ -39,17 +39,6 @@ namespace Casbin.AspNetCore.Authorization
                 throw new ArgumentException($"{_modelProvider.GetModel()} can not return null when {nameof(_options.Value.DefaultEnforcerFactory)} option is empty");
             }
 
-            string? policyPath = _options.Value.DefaultPolicyPath;
-            if (policyPath is not null)
-            {
-                if (!File.Exists(policyPath))
-                {
-                    throw new FileNotFoundException("Can not find the policy file path.", policyPath);
-                }
-                _enforcer ??= new Enforcer(_modelProvider.GetModel(), new DefaultFileAdapter(policyPath));
-                return _enforcer;
-            }
-
             _enforcer ??= new Enforcer(_modelProvider.GetModel());
             return _enforcer;
         }

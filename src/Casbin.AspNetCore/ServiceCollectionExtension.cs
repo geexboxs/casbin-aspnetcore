@@ -33,6 +33,16 @@ namespace Casbin.AspNetCore.Authorization
             services.TryAddSingleton<ICasbinPolicyCreator, CasbinPolicyCreator>();
             services.TryAddSingleton<ICasbinAuthorizationMiddlewareResultHandler, CasbinAuthorizationMiddlewareResultHandler>();
             services.AddCasbinAuthorizationCore(configureOptions, defaultEnforcerProviderLifeTime, defaultModelProviderLifeTime);
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("casbin", x =>
+                {
+                    x.RequireAssertion(authContext =>
+                    {
+                        return authContext.User.HasClaim(p => p.Type == "permissions");
+                    });
+                });
+            });
             return services;
         }
     }
